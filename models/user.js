@@ -13,6 +13,13 @@ const userSchema = new mongoose.Schema(
             unique: true,
             lowercase: true,
             trim: true,
+
+            cpf: {
+                type: String,
+                required: true,
+                unique: true,
+                trim: true,
+            }
         },
         password: {
             type: String,
@@ -22,7 +29,7 @@ const userSchema = new mongoose.Schema(
      
         role: {
             type: String,
-            enum: ["employee", "administrator"]
+            enum: ["EE", "admin"]
         },
         sector: {
             type: String,
