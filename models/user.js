@@ -13,20 +13,19 @@ const userSchema = new mongoose.Schema(
             unique: true,
             lowercase: true,
             trim: true,
-
-            cpf: {
-                type: String,
-                required: true,
-                unique: true,
-                trim: true,
-            }
+        },
+        cpf: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
         },
         password: {
             type: String,
             required: true,
             select: false,
         },
-     
+
         role: {
             type: String,
             enum: ["EE", "admin"]
@@ -39,7 +38,7 @@ const userSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         }
-    
+
     },
     {
         collection: "user",
