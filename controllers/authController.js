@@ -1,4 +1,5 @@
 import authService from "../services/authService.js"
+import authMiddleware from "../middlewares/authMiddleware.js";
 
 const register = async (req, res, next) => {
     try {

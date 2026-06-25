@@ -1,13 +1,13 @@
-import userService from "../services/userService.js";
+// import userService from "../services/userService.js";
 
-const createUser = async (req, res, next) => {
-  try {
-    const user = await userService.createUser(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    next(error);
-  }
-}
+// const createUser = async (req, res, next) => {
+//   try {
+//     const user = await userService.createUser(req.body);
+//     res.status(201).json(user);
+//   } catch (error) {
+//     next(error);
+//   }
+// }
 
 
 // const getAllUser = async (req, res, next) => {
@@ -58,10 +58,10 @@ const createUser = async (req, res, next) => {
 
 
 
-export default {
-  createUser,
+// export default {
+//   createUser,
   // getAllUser,
   // getUserById,
   // updateUser,
   // userDesativate,
-}
+// }
