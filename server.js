@@ -9,6 +9,7 @@ import connectDB from "./config/db.js";
 
 // import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", authRoutes);
+app.use("/requests", requestRoutes);
 // app.use("/users", userRoutes);
 
 const startServer = async () => {

@@ -1,8 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import authController from "../controllers/authController.js";
-import authMiddleware from "../middlewares/authMiddleware.js";
+
 
 const register = async (data) => {
     const { name, email, cpf, password, role, sector, active } = data;
