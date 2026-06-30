@@ -1,13 +1,16 @@
-// import express from "express";
-// import userController from "../controllers/userController.js";
-// import authMiddleware from "../middlewares/authMiddleware.js";
-// const router = express.Router();
-
-// router.delete("/", authMiddleware, userController.deleteUser);
-// router.get("/me/auth", authMiddleware, userController.getMe);
-// router.put("/me/auth", authMiddleware, userController.updateMe);
+import express from "express";
+import userController from "../controllers/userController.js";
+import authMiddleware from "../middlewares/authMiddleware.js";
+import adminMiddleware from "../middlewares/adminMIddleware.js";
+const router = express.Router();
 
 
+router.get("/", authMiddleware, userController.getAllUser);
+router.get("/:id", authMiddleware, userController.getUserById);
+router.put("/:id",adminMiddleware, authMiddleware, userController.updateUser);
+router.patch("/:id/desactivate",adminMiddleware, authMiddleware, userController.userDesativate);
+router.patch("/:id/activate", adminMiddleware, authMiddleware, userController.userActivate);
 
 
-// export default router;
+
+export default router;

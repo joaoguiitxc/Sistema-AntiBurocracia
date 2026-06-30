@@ -1,16 +1,75 @@
-// import get from "mongoose";
-// import User from "../models/user.js";
+import get from "mongoose";
+import User from "../models/user.js";
 
-// const createUser = async (data) => {
-//     const { name, email, password, role, sector, active } = data;
-//     if (!name || !email || !password || !role || !sector || !active) {
-//         const error = new Error("todos os campos devem ser preenchidos corretamente")
+const getAllUser = async () => {
+  return User.find();
+}
 
-//         error.statusCode = 400;
-//         throw error;
-//     }
-// }
+const getUserById = async (id) => {
 
-// export default{
-//     createUser
-// }
+  const userId = await User.findById(id);
+
+  if (!userId) {
+    const error = new Error("Usuário não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return userId;
+}
+
+const updateUser = async (id, data) => {
+  const userUpdate = await User.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!userUpdate) {
+    const error = new Error("Usuário não encontrado");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  return userUpdate;
+}
+
+const userDesativate = async (id) => {
+  const userDesativate = await User.findById(id)
+
+  if (!userDesativate) {
+    const error = new Error("não foi possível encontrar usuário!");
+    error.statusCode = 404;
+    throw error;
+  }
+
+ userDesativate.active = false
+
+await userDesativate.save();
+
+return userDesativate;
+}
+
+const userActivate = async (id) => {
+  const userActivate = await User.findById(id);
+
+  if (!userActivate) {
+    const error = new Error("não foi possível encontrar usuário!");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  userActivate.active = true;
+
+  await userActivate.save();
+
+  return userActivate;
+};
+
+
+export default {
+    getAllUser,
+    getUserById,
+    updateUser,
+    userDesativate,
+    userActivate
+}
