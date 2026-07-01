@@ -22,7 +22,7 @@ const getAllRequests = async (req, res, next) => {
 
 const getRequestsId = async (req, res, next)=>{
 try{
- const requestId = await requestService.getRequestsId(req.user._id);
+ const requestId = await requestService.getRequestsId(req.params.id);
  res.status(200).json(requestId);
 }catch(error){
     next(error)

@@ -22,7 +22,9 @@ const getAllRequests = async () => {
 const getRequestsId = async (id)=>{
 const requestId = await request.findById(id);
 if(!requestId){
-    const error = new Error ("Solicitação não encontrada")
+    const error = new Error ("Solicitação não encontrada");
+      error.statusCode = 404;
+    throw error;
 }
 return requestId
 }
