@@ -2,8 +2,16 @@ import get from "mongoose";
 import request from "../models/request.js";
 import requestController from "../controllers/requestController.js";
 
-const newRequest = async (data) => {
-    const { title, description, category, priority, status, currentStep, createdBy, completionDate } = data;
+const newRequest = async (data, user) => {
+    const { title,
+        description,
+        category,
+        priority,
+        status,
+        currentStep,
+        createdBy,
+        completionDate
+    } = data;
     if (!title || !description || !category || !priority || !status || !currentStep || !createdBy || !completionDate) {
         const error = new Error("Todos os campos devem ser preenchidos corretamente");
         error.statusCode = 400;
@@ -13,23 +21,39 @@ const newRequest = async (data) => {
     return newRequestData;
 };
 
-
 const getAllRequests = async () => {
     const requests = await request.find();
     return requests;
 };
 
-const getRequestsId = async (id)=>{
-const requestId = await request.findById(id);
-if(!requestId){
-    const error = new Error ("Solicitação não encontrada");
-      error.statusCode = 404;
-    throw error;
+const getRequestId = async (userId) => {
+    console.log(userId)
+    const requests = await request.find({ createdBy: userId });
+    return requests
 }
-return requestId
+
+const requestUpdate = async (id, data) => {
+    const newRequest = await request.findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true
+    })
+    return newRequest;
+}
+
+const requestForward = async (id, data) => {
+const forward = await request.
 }
 export default {
     newRequest,
     getAllRequests,
-    getRequestsId
+    getRequestId,
+    requestUpdate
+
 }
+// const forwardRequest = async (id, data) => {
+//     const updated = await request.findByIdAndUpdate(id, data, {
+//         new: true,
+//         runValidators: true
+//     })
+//     return updated;
+// }
