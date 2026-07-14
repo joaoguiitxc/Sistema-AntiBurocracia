@@ -2,24 +2,22 @@ import get from "mongoose";
 import request from "../models/request.js";
 import requestController from "../controllers/requestController.js";
 
-const newRequest = async (data, user) => {
-    const { title,
-        description,
-        category,
-        priority,
-        status,
-        currentStep,
-        createdBy,
-        completionDate
-    } = data;
-    if (!title || !description || !category || !priority || !status || !currentStep || !createdBy || !completionDate) {
-        const error = new Error("Todos os campos devem ser preenchidos corretamente");
-        error.statusCode = 400;
-        throw error;
-    }
-    const newRequestData = await request.create(data);
-    return newRequestData;
+const newRequest = async (body, userId) => {
+
+    const newRequest = await request.create({
+        title: body.title,
+        description: body.description,
+        category: body.category,
+        priority: body.priority,
+
+        status: "in progress",
+        currentStep: "Administrative",
+        createdBy: userId,
+    });
+
+    return newRequest;
 };
+
 
 const getAllRequests = async () => {
     const requests = await request.find();
@@ -40,20 +38,52 @@ const requestUpdate = async (id, data) => {
     return newRequest;
 }
 
-const requestForward = async (id, data) => {
-const forward = await request.
-}
+
+
+const requestForward = async (id, nextStep) => {
+
+    const requestDoc = await request.findById(id);
+
+    if (!requestDoc) {
+        throw new Error("Solicitação não encontrada.");
+    }
+
+    if (requestDoc.status !== "in progress") {
+        throw new Error("A solicitação não pode ser encaminhada.");
+    }
+nextStep = nextStep.trim();
+    const validSteps = [
+        "Administrative",
+        "Purchasing",
+        "Finance",
+        "Maintenance",
+        "Cleaning",
+        "Completed"
+    ];
+    console.log("nextStep recebido:", nextStep);
+console.log("é válido?", validSteps.includes(nextStep));
+
+    if (!validSteps.includes(nextStep)) {
+        throw new Error("Etapa inválida.");
+    }
+
+    requestDoc.currentStep = nextStep;
+
+    if (nextStep === "Completed") {
+        requestDoc.status = "completed";
+        requestDoc.completionDate = new Date();
+    }
+
+    await requestDoc.save();
+
+    return requestDoc;
+};
 export default {
     newRequest,
     getAllRequests,
     getRequestId,
-    requestUpdate
+    requestUpdate,
+    requestForward
 
 }
-// const forwardRequest = async (id, data) => {
-//     const updated = await request.findByIdAndUpdate(id, data, {
-//         new: true,
-//         runValidators: true
-//     })
-//     return updated;
-// }
+

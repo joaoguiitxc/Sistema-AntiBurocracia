@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
+
 const requestSchema = new mongoose.Schema(
     {
         title: {
@@ -34,25 +35,25 @@ const requestSchema = new mongoose.Schema(
             type: String,
             required: true,
             trim: true,
-            enum: ["in progess","completed","cancelled" ]
+            default: "in progress",
+            enum: ["in progress","completed","cancelled" ]
         },
 
          currentStep: {
             type: String,
             required: true,
             trim: true,
+            default: "Administrative"
         },
 
         createdBy: {
             type:mongoose.Schema.Types.ObjectId,
-            required: true,
             trim: true,
         },
 
         completionDate: {
             type: Date,
-            required: true,
-            trim: true,
+           default: null
         },
 
         observations: {

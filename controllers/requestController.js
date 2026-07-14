@@ -1,14 +1,26 @@
 import requestService from "../services/requestService.js";
 
 
-const newRequest = async (req, res, next) => {
+const newRequest = async (req, res) => {
     try {
-        const request = await requestService.newRequest(req.body, req.user);
-        res.status(201).json(request);
+
+        const newRequest = await requestService.newRequest(
+            req.body,
+            req.user._id
+        );
+
+        return res.status(201).json({
+            message: "Solicitação criada com sucesso.",
+            newRequest
+        });
+
     } catch (error) {
-        next(error);
+        return res.status(400).json({
+            error: error.message
+        });
     }
-}
+};
+
 
 const getAllRequests = async (req, res, next) => {
     try {
@@ -39,14 +51,32 @@ const requestUpdate = async (req, res, next) => {
 
 const requestForward = async (req, res, next) => {
     try {
-        const requests = await requestService.requestForward(req.params.id, req.body);
-        res.status(200).json(requestForward);
+        const { nextStep } = req.body;
+
+        const request = await requestService.requestForward(
+            req.params.id,
+            nextStep
+        );
+
+        res.status(200).json(request);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+const requestAdjustment = async (req, res, next) => {
+    try {
+        const {observation} = req.body;
+const adjustement = await requestService.requestAdjustement(req.params.id, observation);
+res.status(200).json({
+    mesagge: "Solicitação enviada para ajuste.",
+    adjustement
+})
     } catch (error) {
         next(error)
     }
 }
-
-
 
 
 export default {
@@ -54,6 +84,7 @@ export default {
     getAllRequests,
     getRequestId,
     requestUpdate,
-    requestForward
+    requestForward,
+    requestAdjustment
 
 }
