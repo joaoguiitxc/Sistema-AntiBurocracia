@@ -2,15 +2,20 @@ import get from "mongoose";
 import request from "../models/request.js";
 import requestController from "../controllers/requestController.js";
 
-const newRequest = async (data) => {
-    const { title, description, category, priority, status, currentStep, createdBy, completionDate } = data;
-    if (!title || !description || !category || !priority || !status || !currentStep || !createdBy || !completionDate) {
-        const error = new Error("Todos os campos devem ser preenchidos corretamente");
-        error.statusCode = 400;
-        throw error;
-    }
-    const newRequestData = await request.create(data);
-    return newRequestData;
+const newRequest = async (body, userId) => {
+
+    const newRequest = await request.create({
+        title: body.title,
+        description: body.description,
+        category: body.category,
+        priority: body.priority,
+
+        status: "in progress",
+        currentStep: "Administrative",
+        createdBy: userId,
+    });
+
+    return newRequest;
 };
 
 
@@ -19,17 +24,66 @@ const getAllRequests = async () => {
     return requests;
 };
 
-const getRequestsId = async (id)=>{
-const requestId = await request.findById(id);
-if(!requestId){
-    const error = new Error ("Solicitação não encontrada");
-      error.statusCode = 404;
-    throw error;
+const getRequestId = async (userId) => {
+    console.log(userId)
+    const requests = await request.find({ createdBy: userId });
+    return requests
 }
-return requestId
+
+const requestUpdate = async (id, data) => {
+    const newRequest = await request.findByIdAndUpdate(id, data, {
+        new: true,
+        runValidators: true
+    })
+    return newRequest;
 }
+
+
+
+const requestForward = async (id, nextStep) => {
+
+    const requestDoc = await request.findById(id);
+
+    if (!requestDoc) {
+        throw new Error("Solicitação não encontrada.");
+    }
+
+    if (requestDoc.status !== "in progress") {
+        throw new Error("A solicitação não pode ser encaminhada.");
+    }
+nextStep = nextStep.trim();
+    const validSteps = [
+        "Administrative",
+        "Purchasing",
+        "Finance",
+        "Maintenance",
+        "Cleaning",
+        "Completed"
+    ];
+    console.log("nextStep recebido:", nextStep);
+console.log("é válido?", validSteps.includes(nextStep));
+
+    if (!validSteps.includes(nextStep)) {
+        throw new Error("Etapa inválida.");
+    }
+
+    requestDoc.currentStep = nextStep;
+
+    if (nextStep === "Completed") {
+        requestDoc.status = "completed";
+        requestDoc.completionDate = new Date();
+    }
+
+    await requestDoc.save();
+
+    return requestDoc;
+};
 export default {
     newRequest,
     getAllRequests,
-    getRequestsId
+    getRequestId,
+    requestUpdate,
+    requestForward
+
 }
+
