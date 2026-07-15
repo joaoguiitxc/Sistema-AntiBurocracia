@@ -1,7 +1,7 @@
-// import { ObjectId } from "mongodb";
-// import mongoose from "mongoose";
+// // import { ObjectId } from "mongodb";
+// // import mongoose from "mongoose";
 
-// const requestHistoriesSchema = new mongoose.Schema(
+// // const requestHistoriesSchema = new mongoose.Schema(
 //     {
 //         requestId: {
 //             type: ObjectId,
@@ -58,4 +58,4 @@
 //     }
 // );
 
-// export default mongoose.model("requestHistories", requestHistoriesSchema);
+export default mongoose.model("requestHistories", requestHistoriesSchema);

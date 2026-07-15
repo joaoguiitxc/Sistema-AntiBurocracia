@@ -19,6 +19,7 @@
 //             type: String,
 //             required: true,
 //             trim: true,
+//             enum: ["Stock Replenishment","Purchasing", "Maintenance", "Cleaning", "Administrative", "other"]
 //         },
 
 //         priority: {
@@ -43,14 +44,14 @@
 //         },
 
 //         createdBy: {
-//             type: ObjectId,
+//             type:mongoose.Schema.Types.ObjectId,
 //             required: true,
 //             trim: true,
 //         },
 
 //         completionDate: {
 //             type: Date,
-//             required: false,
+//             required: true,
 //             trim: true,
 //         },
 
@@ -59,6 +60,28 @@
 //             required: false,
 //             trim: true,
 //         },
+        
+//         sector: {
+//   type: String,
+//   required: true,
+//   enum: [
+//     "administracao",
+//     "financeiro",
+//     "vendas",
+//     "marketing",
+//     "rh",
+//     "atendimento",
+//     "comercial",
+//     "operacoes",
+//     "logistica",
+//     "compras",
+//     "estoque",
+//     "producao",
+//     "qualidade",
+//     "ti",
+//     "juridico"
+//   ],
+// }
 
 //     },
 //     {
