@@ -1,93 +1,72 @@
-// import { ObjectId } from "mongodb";
-// import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
+import mongoose from "mongoose";
 
-// const requestSchema = new mongoose.Schema(
-//     {
-//         title: {
-//             type: String,
-//             required: true,
-//             trim: true,
-//         },
 
-//         description: {
-//             type: String,
-//             required: true,
-//             trim: true,
-//         },
+const requestSchema = new mongoose.Schema(
+    {
+        title: {
+            type: String,
+            required: true,
+            trim: true,
+        },
 
-//         category: {
-//             type: String,
-//             required: true,
-//             trim: true,
-//             enum: ["Stock Replenishment","Purchasing", "Maintenance", "Cleaning", "Administrative", "other"]
-//         },
+        description: {
+            type: String,
+            required: true,
+            trim: true,
+        },
 
-//         priority: {
-//             type: String,
-//             required: true,
-//             trim: true,
-//             enum: ["low","average","high"],
+        category: {
+            type: String,
+            required: true,
+            trim: true,
+            enum: ["Stock Replenishment","Purchasing", "Maintenance", "Cleaning", "Administrative", "other"]
+        },
 
-//         },
+        priority: {
+            type: String,
+            required: true,
+            trim: true,
+            enum: ["low","average","high"],
 
-//         status: {
-//             type: String,
-//             required: true,
-//             trim: true,
-//             enum: ["in progess","completed","cancelled" ]
-//         },
+        },
 
-//          currentStep: {
-//             type: String,
-//             required: true,
-//             trim: true,
-//         },
+        status: {
+            type: String,
+            required: true,
+            trim: true,
+            default: "in progress",
+            enum: ["in progress","completed","cancelled" ]
+        },
 
-//         createdBy: {
-//             type:mongoose.Schema.Types.ObjectId,
-//             required: true,
-//             trim: true,
-//         },
+         currentStep: {
+            type: String,
+            required: true,
+            trim: true,
+            default: "Administrative"
+        },
 
-//         completionDate: {
-//             type: Date,
-//             required: true,
-//             trim: true,
-//         },
+        createdBy: {
+            type:mongoose.Schema.Types.ObjectId,
+            trim: true,
+        },
 
-//         observations: {
-//             type: String,
-//             required: false,
-//             trim: true,
-//         },
-        
-//         sector: {
-//   type: String,
-//   required: true,
-//   enum: [
-//     "administracao",
-//     "financeiro",
-//     "vendas",
-//     "marketing",
-//     "rh",
-//     "atendimento",
-//     "comercial",
-//     "operacoes",
-//     "logistica",
-//     "compras",
-//     "estoque",
-//     "producao",
-//     "qualidade",
-//     "ti",
-//     "juridico"
-//   ],
-// }
+        completionDate: {
+            type: Date,
+           default: null
+        },
 
-//     },
-//     {
-//         collection: "request",
-//         timestamps: true,
-//     }
-// );
+        observations: {
+            type: String,
+            required: false,
+            trim: true,
+        },
 
-// export default mongoose.model("request", requestSchema);
+    },
+    {
+        collection: "request",
+        timestamps: true,
+    }
+);
+
+export default mongoose.model("request", requestSchema);

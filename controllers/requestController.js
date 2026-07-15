@@ -1,35 +1,90 @@
-// import requestService from "../services/requestService.js";
+import requestService from "../services/requestService.js";
 
 
-// const newRequest = async (req, res, next) => {
-//     try {
-//         const request = await requestService.newRequest(req.body);
-//         res.status(201).json(request);
-//     } catch (error) {
-//         next(error);
-//     }
-// }
+const newRequest = async (req, res) => {
+    try {
 
-// const getAllRequests = async (req, res, next) => {
-//     try {
-//         const requests = await requestService.getAllRequests();
-//         res.status(200).json(requests)
+        const newRequest = await requestService.newRequest(
+            req.body,
+            req.user._id
+        );
 
-//     } catch (error) {
-//         next(error);
-//     }
-// }
+        return res.status(201).json({
+            message: "Solicitação criada com sucesso.",
+            newRequest
+        });
 
-// const getRequestsId = async (req, res, next)=>{
-// try{
-//  const requestId = await requestService.getRequestsId(req.user._id);
-//  res.status(200).json(requestId);
-// }catch(error){
-//     next(error)
-// }
-// }
-// export default {
-//     newRequest,
-//     getAllRequests,
-//     getRequestsId
-// }
+    } catch (error) {
+        return res.status(400).json({
+            error: error.message
+        });
+    }
+};
+
+
+const getAllRequests = async (req, res, next) => {
+    try {
+        const requests = await requestService.getAllRequests();
+        res.status(200).json(requests)
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getRequestId = async (req, res, next) => {
+    try {
+        const requestId = await requestService.getRequestId(req.user._id);
+        res.status(200).json(requestId)
+    } catch (error) {
+        next(error);
+    }
+}
+const requestUpdate = async (req, res, next) => {
+    try {
+        const newRequest = await requestService.requestUpdate(req.params.id, req.body);
+        res.status(200).json(newRequest);
+    } catch (error) {
+        next(error)
+    }
+}
+
+const requestForward = async (req, res, next) => {
+    try {
+        const { nextStep } = req.body;
+
+        const request = await requestService.requestForward(
+            req.params.id,
+            nextStep
+        );
+
+        res.status(200).json(request);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+const requestAdjustment = async (req, res, next) => {
+    try {
+        const {observation} = req.body;
+const adjustement = await requestService.requestAdjustement(req.params.id, observation);
+res.status(200).json({
+    mesagge: "Solicitação enviada para ajuste.",
+    adjustement
+})
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+export default {
+    newRequest,
+    getAllRequests,
+    getRequestId,
+    requestUpdate,
+    requestForward,
+    requestAdjustment
+
+}
