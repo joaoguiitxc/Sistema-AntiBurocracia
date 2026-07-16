@@ -79,23 +79,51 @@ const requestForward = async (id, nextStep) => {
     return requestDoc;
 };
 const requestAdjustment = async (id, observation) => {
+
     const requestAdj = await request.findById(id);
 
     if (!requestAdj) {
-        throw new error("Solicitação não encontrada")
-    };
+        throw new Error("Solicitação não encontrada.");
+    }
+
 
     if (requestAdj.status !== "in progress") {
-        throw new error("Essa solicitação não pode receber ajustes");
+        throw new Error(
+            "Essa solicitação não pode receber ajustes."
+        );
     }
+
+
     if (!observation) {
-        throw new error("A observação do ajuste é obrigatoria");
+        throw new Error(
+            "A observação do ajuste é obrigatória."
+        );
     }
+
+
     requestAdj.observations = observation;
 
-    requestAdj.save();
-    return requestAdj
 
+    await requestAdj.save();
+
+
+    return requestAdj;
+};
+const requestComplete = async (id) => {
+    const requestComplete = await request.findById(id);
+    if (!requestComplete) {
+        throw new Error("solicitação não encontrada");
+    }
+    if (requestComplete.status !== "in progress") {
+        throw new Error("Essa solicitação ainda está em progresso")
+    };
+    requestComplete.status = "completed";
+    requestComplete.currentStep = "Completed";
+    requestComplete.completionDate = new Date();
+
+    await requestComplete.save();
+
+    return requestComplete;
 }
 export default {
     newRequest,
@@ -103,7 +131,8 @@ export default {
     getRequestId,
     requestUpdate,
     requestForward,
-    requestAdjustment
+    requestAdjustment,
+    requestComplete
+
 
 }
-

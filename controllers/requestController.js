@@ -1,3 +1,4 @@
+import request from "../models/request.js";
 import requestService from "../services/requestService.js";
 
 
@@ -68,11 +69,26 @@ const requestForward = async (req, res, next) => {
 const requestAdjustment = async (req, res, next) => {
     try {
         const { observation } = req.body;
+
         const adjustment = await requestService.requestAdjustment(req.params.id, req.body);
+
         res.status(200).json({
             mesagge: "Solicitação enviada para ajuste.",
             adjustment
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const requestComplete = async (req, res, next) => {
+    try {
+        const requestComplete = await requestService.requestComplete(req.params.id);
+
+        res.status(200).json({
+            mesagge: "Solicitação concluída com sucesso",
+            requestComplete
+        });
     } catch (error) {
         next(error)
     }
@@ -85,6 +101,7 @@ export default {
     getRequestId,
     requestUpdate,
     requestForward,
-    requestAdjustment
+    requestAdjustment,
+    requestComplete
 
 }
