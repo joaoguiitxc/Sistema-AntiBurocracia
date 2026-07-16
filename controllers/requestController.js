@@ -67,12 +67,12 @@ const requestForward = async (req, res, next) => {
 
 const requestAdjustment = async (req, res, next) => {
     try {
-        const {observation} = req.body;
-const adjustement = await requestService.requestAdjustement(req.params.id, observation);
-res.status(200).json({
-    mesagge: "Solicitação enviada para ajuste.",
-    adjustement
-})
+        const { observation } = req.body;
+        const adjustment = await requestService.requestAdjustment(req.params.id, req.body);
+        res.status(200).json({
+            mesagge: "Solicitação enviada para ajuste.",
+            adjustment
+        })
     } catch (error) {
         next(error)
     }

@@ -51,7 +51,7 @@ const requestForward = async (id, nextStep) => {
     if (requestDoc.status !== "in progress") {
         throw new Error("A solicitação não pode ser encaminhada.");
     }
-nextStep = nextStep.trim();
+    nextStep = nextStep.trim();
     const validSteps = [
         "Administrative",
         "Purchasing",
@@ -61,7 +61,7 @@ nextStep = nextStep.trim();
         "Completed"
     ];
     console.log("nextStep recebido:", nextStep);
-console.log("é válido?", validSteps.includes(nextStep));
+    console.log("é válido?", validSteps.includes(nextStep));
 
     if (!validSteps.includes(nextStep)) {
         throw new Error("Etapa inválida.");
@@ -78,12 +78,32 @@ console.log("é válido?", validSteps.includes(nextStep));
 
     return requestDoc;
 };
+const requestAdjustment = async (id, observation) => {
+    const requestAdj = await request.findById(id);
+
+    if (!requestAdj) {
+        throw new error("Solicitação não encontrada")
+    };
+
+    if (requestAdj.status !== "in progress") {
+        throw new error("Essa solicitação não pode receber ajustes");
+    }
+    if (!observation) {
+        throw new error("A observação do ajuste é obrigatoria");
+    }
+    requestAdj.observations = observation;
+
+    requestAdj.save();
+    return requestAdj
+
+}
 export default {
     newRequest,
     getAllRequests,
     getRequestId,
     requestUpdate,
-    requestForward
+    requestForward,
+    requestAdjustment
 
 }
 

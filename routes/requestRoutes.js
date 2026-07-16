@@ -7,7 +7,7 @@ const router = express.Router();
 router.post("/", authMiddleware, requestController.newRequest);
 router.get("/", requestController.getAllRequests);
 router.get("/id", authMiddleware, requestController.getRequestId);
-router.put("/:id", authMiddleware,requestController.requestUpdate);
+router.put("/:id", authMiddleware, requestController.requestUpdate);
 router.patch("/:id/forward", authMiddleware, requestController.requestForward);
-//router.patch("/:id/request-adjustement",)
+router.patch("/:id/request-adjustement", authMiddleware, requestController.requestAdjustment);
 export default router;
