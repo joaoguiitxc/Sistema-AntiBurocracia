@@ -10,7 +10,7 @@ const newRequest = async (body, userId) => {
         category: body.category,
         priority: body.priority,
 
-        status: "in progress",
+        status: "in progress", 
         currentStep: "Administrative",
         createdBy: userId,
     });

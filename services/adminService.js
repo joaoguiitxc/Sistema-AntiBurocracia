@@ -16,63 +16,63 @@ const dashboard = async () => {
     }
 }
 
-// const averageTime = async () => {
+const averageTime = async () => {
 
-//     const requests = await Request.find({
-//         status: "completed"
-//     })
+    const requests = await Request.find({
+        status: "completed"
+    })
 
-//     if (requests.length === 0) {
-//         const error = new Error("Não existem solicitações concluídas");
-//         error.statusCode = 404;
-//         throw error;
-//     }
+    if (requests.length === 0) {
+        const error = new Error("Não existem solicitações concluídas");
+        error.statusCode = 404;
+        throw error;
+    }
 
-//     let totalTime = 0;
+    let totalTime = 0;
 
-//     requests.forEach(request => {
-//         totalTime += request.completionDate - request.createdAt;
-//     });
+    requests.forEach(request => {
+        totalTime += request.completionDate - request.createdAt;
+    });
 
-//     const averageTime = totalTime / requests.length;
+    const averageTime = totalTime / requests.length;
 
-//     return {
-//         averageTime
-//     }
-// }
+    return {
+        averageTime
+    }
+}
 
-// const bottlenecks = async () => {
+const bottlenecks = async () => {
 
-//     const history = await RequestHistory.find()
+    const history = await RequestHistory.find()
 
-//     if (history.length === 0) {
-//         const error = new Error("Nenhum histórico encontrado");
-//         error.statusCode = 404;
-//         throw error;
-//     }
+    if (history.length === 0) {
+        const error = new Error("Nenhum histórico encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
 
-//     return history;
-// }
+    return history;
+}
 
-// const workloadBySector = async () => {
+const workloadBySector = async () => {
 
-//     const workload = await Request.aggregate([
-//         {
-//             $group: {
-//                 _id: "$currentStep",
-//                 totalRequests: {
-//                     $sum: 1
-//                 }
-//             }
-//         }
-//     ]);
+    const workload = await Request.aggregate([
+        {
+            $group: {
+                _id: "$currentStep",
+                totalRequests: {
+                    $sum: 1
+                }
+            }
+        }
+    ]);
 
-//     return workload;
-// }
+    return workload;
+}
 
 export default {
     dashboard,
-    // averageTime,
-    // bottlenecks,
-    // workloadBySector
+    averageTime,
+    bottlenecks,
+    workloadBySector
 }
