@@ -78,12 +78,45 @@ console.log("é válido?", validSteps.includes(nextStep));
 
     return requestDoc;
 };
+const requestAdjustment = async (id, observation) => {
+
+    const requestAdj = await request.findById(id);
+
+    if (!requestAdj) {
+        throw new Error("Solicitação não encontrada.");
+    }
+
+
+    if (requestAdj.status !== "in progress") {
+        throw new Error(
+            "Essa solicitação não pode receber ajustes."
+        );
+    }
+
+
+    if (!observation) {
+        throw new Error(
+            "A observação do ajuste é obrigatória."
+        );
+    }
+
+
+    requestAdj.observations = observation;
+
+
+    await requestAdj.save();
+
+
+    return requestAdj;
+};
 export default {
     newRequest,
     getAllRequests,
     getRequestId,
     requestUpdate,
-    requestForward
+    requestForward,
+    requestAdjustment
+
 
 }
 
