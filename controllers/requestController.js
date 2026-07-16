@@ -68,7 +68,9 @@ const requestForward = async (req, res, next) => {
 const requestAdjustment = async (req, res, next) => {
     try {
         const { observation } = req.body;
+
         const adjustment = await requestService.requestAdjustment(req.params.id, observation);
+
         res.status(200).json({
             mesagge: "Solicitação enviada para ajuste.",
             adjustment
