@@ -10,7 +10,7 @@ const newRequest = async (body, userId) => {
         category: body.category,
         priority: body.priority,
 
-        status: "in progress", 
+        status: "in progress",
         currentStep: "Administrative",
         createdBy: userId,
     });
@@ -51,7 +51,7 @@ const requestForward = async (id, nextStep) => {
     if (requestDoc.status !== "in progress") {
         throw new Error("A solicitação não pode ser encaminhada.");
     }
-nextStep = nextStep.trim();
+    nextStep = nextStep.trim();
     const validSteps = [
         "Administrative",
         "Purchasing",
@@ -61,7 +61,7 @@ nextStep = nextStep.trim();
         "Completed"
     ];
     console.log("nextStep recebido:", nextStep);
-console.log("é válido?", validSteps.includes(nextStep));
+    console.log("é válido?", validSteps.includes(nextStep));
 
     if (!validSteps.includes(nextStep)) {
         throw new Error("Etapa inválida.");
@@ -109,14 +109,30 @@ const requestAdjustment = async (id, observation) => {
 
     return requestAdj;
 };
+const requestComplete = async (id) => {
+    const requestComplete = await request.findById(id);
+    if (!requestComplete) {
+        throw new Error("solicitação não encontrada");
+    }
+    if (requestComplete.status !== "in progress") {
+        throw new Error("Essa solicitação ainda está em progresso")
+    };
+    requestComplete.status = "completed";
+    requestComplete.currentStep = "Completed";
+    requestComplete.completionDate = new Date();
+
+    await requestComplete.save();
+
+    return requestComplete;
+}
 export default {
     newRequest,
     getAllRequests,
     getRequestId,
     requestUpdate,
     requestForward,
-    requestAdjustment
+    requestAdjustment,
+    requestComplete
 
 
 }
-
