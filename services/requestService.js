@@ -1,6 +1,7 @@
 import get from "mongoose";
 import request from "../models/request.js";
 import requestController from "../controllers/requestController.js";
+import requestHistoryService from "./requestHistoryService.js";
 
 const newRequest = async (body, userId) => {
 
@@ -9,12 +10,18 @@ const newRequest = async (body, userId) => {
         description: body.description,
         category: body.category,
         priority: body.priority,
-
         status: "in progress",
         currentStep: "Administrative",
         createdBy: userId,
     });
-
+    await requestHistoryService.createHistory(
+        newRequest._id,
+        userId,
+        "Created",
+        null,
+        "Administrative",
+        "Solicitação criada."
+    );
     return newRequest;
 };
 
@@ -124,6 +131,25 @@ const requestComplete = async (id) => {
     await requestComplete.save();
 
     return requestComplete;
+};
+
+const requestCancel = async (id, observation) => {
+    const requestC = await request.findById(id);
+    if (!requestC) {
+        throw new Error("Solicitação não encontrada")
+    }
+    if (requestC.status !== "in progress") {
+        throw new Error("Essa solicitação não pode ser cancelada")
+    }
+    if (!observation) {
+        throw new Error("O motivo do cancelamento da solicitação é obrigatório")
+    }
+    requestC.status = "cancelled";
+    requestC.observations = observation;
+
+    await requestC.save()
+    return requestC
+
 }
 export default {
     newRequest,
@@ -132,7 +158,8 @@ export default {
     requestUpdate,
     requestForward,
     requestAdjustment,
-    requestComplete
+    requestComplete,
+    requestCancel
 
 
 }

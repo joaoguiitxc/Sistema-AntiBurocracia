@@ -70,7 +70,7 @@ const requestAdjustment = async (req, res, next) => {
     try {
         const { observation } = req.body;
 
-        const adjustment = await requestService.requestAdjustment(req.params.id, req.body);
+        const adjustment = await requestService.requestAdjustment(req.params.id, observation);
 
         res.status(200).json({
             mesagge: "Solicitação enviada para ajuste.",
@@ -79,7 +79,7 @@ const requestAdjustment = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-}
+};
 
 const requestComplete = async (req, res, next) => {
     try {
@@ -92,8 +92,19 @@ const requestComplete = async (req, res, next) => {
     } catch (error) {
         next(error)
     }
-}
-
+};
+const requestCancel = async (req, res, next) => {
+    try {
+        const { observation } = req.body;
+        const cancel = await requestService.requestCancel(req.params.id, observation);
+        res.status(200).json({
+            mesagge: "Solicitação cancelada",
+            cancel
+        })
+    } catch (error) {
+        next(error)
+    }
+};
 
 export default {
     newRequest,
@@ -102,6 +113,7 @@ export default {
     requestUpdate,
     requestForward,
     requestAdjustment,
-    requestComplete
+    requestComplete,
+    requestCancel
 
 }
