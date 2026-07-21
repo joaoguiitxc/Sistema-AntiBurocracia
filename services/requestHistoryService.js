@@ -9,7 +9,7 @@ const createHistory = async (
     newStep = null,
     observations = null
 ) => {
-
+    console.log("Entrou no createHistory");
     const history = await RequestHistory.create({
         requestId,
         userId,

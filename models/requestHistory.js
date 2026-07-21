@@ -34,7 +34,7 @@ const requestHistorySchema = new mongoose.Schema(
         },
     },
     {
-        collection: "requestHistories",
+        collection: "requestHistory",
         timestamps: true,
     }
 );
