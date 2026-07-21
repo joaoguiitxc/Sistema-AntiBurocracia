@@ -38,8 +38,6 @@ const requestUpdate = async (id, data) => {
     return newRequest;
 }
 
-
-
 const requestForward = async (id, nextStep) => {
 
     const requestDoc = await request.findById(id);
@@ -51,7 +49,13 @@ const requestForward = async (id, nextStep) => {
     if (requestDoc.status !== "in progress") {
         throw new Error("A solicitação não pode ser encaminhada.");
     }
-nextStep = nextStep.trim();
+
+    if (!nextStep) {
+        throw new Error("Próxima etapa não informada.");
+    }
+
+    nextStep = nextStep.trim();
+
     const validSteps = [
         "Administrative",
         "Purchasing",
@@ -60,8 +64,9 @@ nextStep = nextStep.trim();
         "Cleaning",
         "Completed"
     ];
+
     console.log("nextStep recebido:", nextStep);
-console.log("é válido?", validSteps.includes(nextStep));
+    console.log("é válido?", validSteps.includes(nextStep));
 
     if (!validSteps.includes(nextStep)) {
         throw new Error("Etapa inválida.");
