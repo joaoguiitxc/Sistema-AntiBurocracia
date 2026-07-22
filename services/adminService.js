@@ -1,12 +1,12 @@
-import Request from "../models/request.js";
+import request from "../models/request.js";
 import RequestHistory from "../models/requestHistory.js";
 
 const dashboard = async () => {
 
-    const totalRequests = await Request.countDocuments();
-    const inProgress = await Request.countDocuments({ status: "in progress" });
-    const completed = await Request.countDocuments({ status: "completed" });
-    const cancelled = await Request.countDocuments({ status: "cancelled" });
+    const totalRequests = await request.countDocuments();
+    const inProgress = await request.countDocuments({ status: "in progress" });
+    const completed = await request.countDocuments({ status: "completed" });
+    const cancelled = await request.countDocuments({ status: "cancelled" });
 
     return {
         totalRequests,
@@ -18,7 +18,7 @@ const dashboard = async () => {
 
 const averageTime = async () => {
 
-    const requests = await Request.find({
+    const requests = await request.find({
         status: "completed"
     })
 
@@ -56,7 +56,7 @@ const bottlenecks = async () => {
 
 const workloadBySector = async () => {
 
-    const workload = await Request.aggregate([
+    const workload = await request.aggregate([
         {
             $group: {
                 _id: "$currentStep",
