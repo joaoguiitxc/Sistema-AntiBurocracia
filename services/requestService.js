@@ -69,6 +69,7 @@ const requestForward = async (id, nextStep, userId) => {
         "Cleaning",
         "Completed"
     ];
+
     console.log("nextStep recebido:", nextStep);
     console.log("é válido?", validSteps.includes(nextStep));
 
