@@ -1,5 +1,5 @@
 import request from "../models/request.js";
-// import requestHistory from "../models/requestHistory.js";
+import RequestHistory from "../models/requestHistory.js";
 
 const dashboard = async () => {
 

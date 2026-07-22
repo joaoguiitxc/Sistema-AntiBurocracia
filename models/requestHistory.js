@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-const requestHistoriesSchema = new mongoose.Schema(
+const requestHistorySchema = new mongoose.Schema(
     {
         requestId: {
             type: mongoose.Schema.Types.ObjectId,
+            ref: "request",
             required: true,
         },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
+            ref:"User",
             required: true,
         },
         action: {
@@ -32,9 +34,9 @@ const requestHistoriesSchema = new mongoose.Schema(
         },
     },
     {
-        collection: "requestHistories",
+        collection: "requestHistory",
         timestamps: true,
     }
 );
 
-export default mongoose.model("requestHistories", requestHistoriesSchema);
+export default mongoose.model("requestHistory", requestHistorySchema);

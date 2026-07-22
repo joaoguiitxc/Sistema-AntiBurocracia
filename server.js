@@ -11,6 +11,7 @@ import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import requestRoutes from "./routes/requestRoutes.js";
+import requestHistoryRoutes from "./routes/requestHistoryRoutes.js";
 
 dotenv.config();
 
@@ -25,8 +26,9 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
-app.use("/admin",adminRoutes)
+app.use("/admin", adminRoutes)
 app.use("/requests", requestRoutes);
+app.use("/request-history", requestHistoryRoutes);
 
 const startServer = async () => {
   try {
