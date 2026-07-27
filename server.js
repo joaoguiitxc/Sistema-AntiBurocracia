@@ -1,7 +1,7 @@
 import { setServers } from "node:dns/promises";
 setServers(["1.1.1.1", "8.8.8.8"]);
 
-//import cors from "cors";
+import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 
@@ -18,6 +18,8 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.use(cors());
 
 app.use(express.json());
 
