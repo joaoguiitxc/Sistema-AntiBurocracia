@@ -88,7 +88,6 @@ const requestForward = async (id, nextStep, userId) => {
     await requestHistoryService.createHistory(
         requestDoc._id,
         userId,
-        requestDoc.createdBy,
         "Forwarded",
         previousStep,
         nextStep,
