@@ -56,7 +56,8 @@ const requestForward = async (req, res, next) => {
 
         const request = await requestService.requestForward(
             req.params.id,
-            nextStep
+            nextStep,
+            req.user._id
         );
 
         res.status(200).json(request);

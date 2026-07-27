@@ -12,6 +12,7 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import requestRoutes from "./routes/requestRoutes.js";
 import requestHistoryRoutes from "./routes/requestHistoryRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/user", userRoutes);
 app.use("/admin", adminRoutes)
 app.use("/requests", requestRoutes);
 app.use("/request-history", requestHistoryRoutes);
+app.use("/reports", reportRoutes);
 
 const startServer = async () => {
   try {
