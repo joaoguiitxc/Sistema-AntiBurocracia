@@ -5,7 +5,7 @@ import adminMiddleware from "../middlewares/adminMiddleware.js";
 
 const router = express.Router();
 
-router.post("/register",adminMiddleware, adminMiddleware, authController.register );
+router.post("/register", authController.register );
 router.post("/login", authController.login );
 
 export default router;
