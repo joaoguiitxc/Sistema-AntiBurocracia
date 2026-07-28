@@ -33,20 +33,20 @@ const updateUser = async (id, data) => {
   return userUpdate;
 }
 
-const userDesativate = async (id) => {
+const userDeactivate = async (id) => {
   const userDesativate = await User.findById(id)
 
-  if (!userDesativate) {
+  if (!userDeactivate) {
     const error = new Error("não foi possível encontrar usuário!");
     error.statusCode = 404;
     throw error;
   }
 
- userDesativate.active = false
+ userDeactivate.active = false
 
-await userDesativate.save();
+await userDeactivate.save();
 
-return userDesativate;
+return userDeactivate;
 }
 
 const userActivate = async (id) => {
@@ -70,6 +70,6 @@ export default {
     getAllUser,
     getUserById,
     updateUser,
-    userDesativate,
+    userDeactivate,
     userActivate
 }
