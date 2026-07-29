@@ -144,7 +144,7 @@ const requestForward = async (id, nextStep, userId) => {
 
 
 
-const requestAdjustment = async (id, observation) => {
+const requestAdjustment = async (id, observatio, userId) => {
 
     const request = await Request.findById(id);
 
@@ -173,16 +173,14 @@ const requestAdjustment = async (id, observation) => {
 
     await request.save();
 
-
-    await requestHistoryService.createHistory(
-        request._id,
-        request.createdBy,
-        "Adjustment Requested",
-        request.currentStep,
-        request.currentStep,
-        observation
-    );
-
+await requestHistoryService.createHistory(
+    request._id,
+    userId,
+    "Adjustment Requested",
+    request.currentStep,
+    request.currentStep,
+    observation
+);
 
     return request;
 };
