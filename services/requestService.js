@@ -144,7 +144,7 @@ const requestForward = async (id, nextStep, userId) => {
 
 
 
-const requestAdjustment = async (id, observatio, userId) => {
+const requestAdjustment = async (id, observation, userId) => {
 
     const request = await Request.findById(id);
 
@@ -173,21 +173,21 @@ const requestAdjustment = async (id, observatio, userId) => {
 
     await request.save();
 
-await requestHistoryService.createHistory(
-    request._id,
-    userId,
-    "Adjustment Requested",
-    request.currentStep,
-    request.currentStep,
-    observation
-);
+    await requestHistoryService.createHistory(
+        request._id,
+        userId,
+        "Adjustment Requested",
+        request.currentStep,
+        request.currentStep,
+        observation
+    );
 
     return request;
 };
 
 
 
-const requestComplete = async (id) => {
+const requestComplete = async (id, userId) => {
 
     const request = await Request.findById(id);
 
@@ -219,7 +219,7 @@ const requestComplete = async (id) => {
 
     await requestHistoryService.createHistory(
         request._id,
-        request.createdBy,
+        userId,
         "Completed",
         previousStep,
         "Completed",
@@ -232,7 +232,7 @@ const requestComplete = async (id) => {
 
 
 
-const requestCancel = async (id, observation) => {
+const requestCancel = async (id, observation, userId) => {
 
     const request = await Request.findById(id);
 
@@ -267,7 +267,7 @@ const requestCancel = async (id, observation) => {
 
     await requestHistoryService.createHistory(
         request._id,
-        request.createdBy,
+        userId,
         "Cancelled",
         request.currentStep,
         request.currentStep,
