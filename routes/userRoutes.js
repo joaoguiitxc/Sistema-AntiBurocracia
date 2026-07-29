@@ -5,7 +5,12 @@ import adminMiddleware from "../middlewares/adminMiddleware.js";
 
 const router = express.Router();
 
-
+router.post(
+    "/",
+    authMiddleware,
+    adminMiddleware,
+    userController.createUser
+);
 router.get(
     "/",
     authMiddleware,

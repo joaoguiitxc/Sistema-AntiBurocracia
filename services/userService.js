@@ -1,6 +1,62 @@
 import bcrypt from "bcryptjs";
 import User from "../models/user.js";
 
+const createUser = async (data) => {
+
+    const {
+        name,
+        email,
+        password,
+        role,
+        sector
+    } = data;
+
+
+    if (!name || !email || !password || !role || !sector) {
+
+        const error = new Error(
+            "Todos os campos devem ser preenchidos"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+
+    const userExists = await User.findOne({
+        email
+    });
+
+
+    if (userExists) {
+
+        const error = new Error(
+            "Esse usuário já existe"
+        );
+
+        error.statusCode = 400;
+        throw error;
+    }
+
+
+    const hashedPassword = await bcrypt.hash(
+        password,
+        10
+    );
+
+
+    const user = await User.create({
+        name,
+        email,
+        password: hashedPassword,
+        role,
+        sector,
+        active: true
+    });
+
+
+    return user;
+};
 
 const getAllUser = async () => {
     return await User.find();
@@ -97,4 +153,5 @@ export default {
     updateUser,
     deactivateUser,
     activateUser,
+    createUser
 };
