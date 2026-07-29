@@ -120,7 +120,8 @@ const requestComplete = async (req, res, next) => {
     try {
 
         const requestComplete = await requestService.requestComplete(
-            req.params.id
+            req.params.id,
+            req.user._id
         );
 
 
@@ -145,7 +146,8 @@ const requestCancel = async (req, res, next) => {
 
         const cancel = await requestService.requestCancel(
             req.params.id,
-            observation
+            observation,
+            req.user._id
         );
 
 
