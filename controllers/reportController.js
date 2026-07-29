@@ -7,7 +7,7 @@ const averageTime = async (req, res, next) => {
         const report =
             await reportService.averageTime();
 
-        res.status(200).json(report);
+        return res.status(200).json(report);
 
     } catch (error) {
 
@@ -24,7 +24,7 @@ const bottlenecks = async (req, res, next) => {
         const report =
             await reportService.bottlenecks();
 
-        res.status(200).json(report);
+        return res.status(200).json(report);
 
     } catch (error) {
 
@@ -41,7 +41,7 @@ const workloadBySector = async (req, res, next) => {
         const report =
             await reportService.workloadBySector();
 
-        res.status(200).json(report);
+        return res.status(200).json(report);
 
     } catch (error) {
 

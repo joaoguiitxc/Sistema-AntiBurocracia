@@ -1,54 +1,86 @@
 import userService from "../services/userService.js";
+
+
 const getAllUser = async (req, res, next) => {
-  try {
-    const user = await userService.getAllUser();
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-}
+    try {
+        const users = await userService.getAllUser();
+
+        return res.status(200).json(users);
+
+    } catch (error) {
+        next(error);
+    }
+};
 
 
 const getUserById = async (req, res, next) => {
-  try {
-    const userId = await userService.getUserById(req.params.id);
-    res.json(userId);
-  } catch (error) {
-    next(error);
-  }
-}
+    try {
+        const user = await userService.getUserById(req.params.id);
+
+        return res.status(200).json(user);
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 const updateUser = async (req, res, next) => {
-  try {
-    const user = await userService.updateUser(req.params.id, req.body);
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-}
+    try {
+        const user = await userService.updateUser(
+            req.params.id,
+            req.body
+        );
 
-const userDesativate = async (req, res, next) => {
-  try {
-    const userDesativate = await userService.userDesativate(req.params.id);
-    res.json(userDesativate);
-  } catch (error) {
-    next(error);
-  }
-}
+        return res.status(200).json({
+            message: "Usuário atualizado com sucesso",
+            data: user,
+        });
 
-const userActivate = async (req, res, next) => {
-  try {
-    const userActivate = await userService.userActivate(req.params.id);
-    res.json(userActivate);
-  } catch (error) {
-    next(error);
-  }
-}
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+const deactivateUser = async (req, res, next) => {
+    try {
+        const user = await userService.deactivateUser(
+            req.params.id
+        );
+
+        return res.status(200).json({
+            message: "Usuário desativado com sucesso",
+            data: user,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+const activateUser = async (req, res, next) => {
+    try {
+        const user = await userService.activateUser(
+            req.params.id
+        );
+
+        return res.status(200).json({
+            message: "Usuário ativado com sucesso",
+            data: user,
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 export default {
-  getAllUser,
-  getUserById,
-  updateUser,
-  userDesativate,
-  userActivate
-}
+    getAllUser,
+    getUserById,
+    updateUser,
+    deactivateUser,
+    activateUser,
+};

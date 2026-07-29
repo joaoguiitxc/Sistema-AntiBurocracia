@@ -1,62 +1,112 @@
-import request from "../models/request.js";
+import Request from "../models/request.js";
 import RequestHistory from "../models/requestHistory.js";
+
 
 const dashboard = async () => {
 
-    const totalRequests = await request.countDocuments();
-    const inProgress = await request.countDocuments({ status: "in progress" });
-    const completed = await request.countDocuments({ status: "completed" });
-    const cancelled = await request.countDocuments({ status: "cancelled" });
+    const totalRequests = await Request.countDocuments();
+
+    const inProgress = await Request.countDocuments({
+        status: "in progress"
+    });
+
+    const completed = await Request.countDocuments({
+        status: "completed"
+    });
+
+    const cancelled = await Request.countDocuments({
+        status: "cancelled"
+    });
+
 
     return {
         totalRequests,
         inProgress,
         completed,
         cancelled
-    }
-}
+    };
+};
+
+
 
 const averageTime = async () => {
 
-    const requests = await request.find({
+    const requests = await Request.find({
         status: "completed"
-    })
+    });
+
 
     if (requests.length === 0) {
-        const error = new Error("Não existem solicitações concluídas");
+        const error = new Error(
+            "Não existem solicitações concluídas"
+        );
+
         error.statusCode = 404;
+
         throw error;
     }
+
 
     let totalTime = 0;
 
-    requests.forEach(request => {
-        totalTime += request.completionDate - request.createdAt;
+
+    requests.forEach(item => {
+
+        totalTime +=
+            item.completionDate - item.createdAt;
+
     });
 
-    const averageTime = totalTime / requests.length;
+
+    const averageMilliseconds =
+        totalTime / requests.length;
+
+
+    const averageDays =
+        averageMilliseconds /
+        (1000 * 60 * 60 * 24);
+
+
 
     return {
-        averageTime
-    }
-}
+        averageDays: Number(averageDays.toFixed(2))
+    };
+};
+
+
 
 const bottlenecks = async () => {
 
-    const history = await RequestHistory.find()
+    const bottlenecks = await Request.aggregate([
+        {
+            $match: {
+                status: "in progress"
+            }
+        },
+        {
+            $group: {
+                _id: "$currentStep",
+                totalRequests: {
+                    $sum: 1
+                }
+            }
+        },
+        {
+            $sort: {
+                totalRequests: -1
+            }
+        }
+    ]);
 
-    if (history.length === 0) {
-        const error = new Error("Nenhum histórico encontrado");
-        error.statusCode = 404;
-        throw error;
-    }
 
-    return history;
-}
+    return bottlenecks;
+};
+
+
 
 const workloadBySector = async () => {
 
-    const workload = await request.aggregate([
+    const workload = await Request.aggregate([
         {
             $group: {
                 _id: "$currentStep",
@@ -67,12 +117,15 @@ const workloadBySector = async () => {
         }
     ]);
 
+
     return workload;
-}
+};
+
+
 
 export default {
     dashboard,
     averageTime,
     bottlenecks,
     workloadBySector
-}
+};

@@ -1,80 +1,106 @@
-import request from "../models/request.js";
+import Request from "../models/request.js";
+
 
 const averageTime = async () => {
 
-    const requests = await request.find({
+    const requests = await Request.find({
         status: "completed"
     });
 
+
     let totalTime = 0;
 
-    for (const req of requests) {
 
-        const time =
-            req.completionDate - req.createdAt;
+    for (const item of requests) {
 
-        totalTime += time;
+        totalTime +=
+            item.completionDate - item.createdAt;
+
     }
+
 
     const average =
         requests.length > 0
             ? totalTime / requests.length
             : 0;
 
+
+
     const averageDays =
         average / (1000 * 60 * 60 * 24);
 
+
+
     return {
         averageTimeInDays:
-            averageDays.toFixed(2)
+            Number(averageDays.toFixed(2))
     };
+
 };
+
+
 
 const bottlenecks = async () => {
 
-    const requests = await request.find({
+    const requests = await Request.find({
         status: "in progress"
     });
+
 
     const sectors = {};
 
-    requests.forEach((req) => {
 
-        if (!sectors[req.currentStep]) {
+    requests.forEach((item) => {
 
-            sectors[req.currentStep] = 0;
+        if (!sectors[item.currentStep]) {
+
+            sectors[item.currentStep] = 0;
 
         }
 
-        sectors[req.currentStep]++;
+
+        sectors[item.currentStep]++;
 
     });
 
+
+
     return sectors;
+
 };
+
+
 
 const workloadBySector = async () => {
 
-    const requests = await request.find({
+    const requests = await Request.find({
         status: "in progress"
     });
 
+
     const workload = {};
 
-    requests.forEach((req) => {
 
-        if (!workload[req.currentStep]) {
+    requests.forEach((item) => {
 
-            workload[req.currentStep] = 0;
+        if (!workload[item.currentStep]) {
+
+            workload[item.currentStep] = 0;
 
         }
 
-        workload[req.currentStep]++;
+
+        workload[item.currentStep]++;
 
     });
 
+
+
     return workload;
+
 };
+
+
 
 export default {
     averageTime,

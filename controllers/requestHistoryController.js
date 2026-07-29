@@ -10,7 +10,8 @@ const getRequestHistory = async (req, res, next) => {
                 req.user
             );
 
-        res.status(200).json(history);
+return res.status(200).json(history);
+
 
     } catch (error) {
         next(error);

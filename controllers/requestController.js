@@ -1,8 +1,7 @@
-import request from "../models/request.js";
 import requestService from "../services/requestService.js";
 
 
-const newRequest = async (req, res) => {
+const newRequest = async (req, res, next) => {
     try {
 
         const newRequest = await requestService.newRequest(
@@ -10,49 +9,72 @@ const newRequest = async (req, res) => {
             req.user._id
         );
 
+
         return res.status(201).json({
             message: "Solicitação criada com sucesso.",
-            newRequest
+            data: newRequest
         });
 
     } catch (error) {
-        return res.status(400).json({
-            error: error.message
-        });
+        next(error);
     }
 };
 
 
+
 const getAllRequests = async (req, res, next) => {
     try {
+
         const requests = await requestService.getAllRequests();
-        res.status(200).json(requests)
+
+        return res.status(200).json(requests);
 
     } catch (error) {
         next(error);
     }
-}
+};
+
+
 
 const getRequestId = async (req, res, next) => {
     try {
-        const requestId = await requestService.getRequestId(req.user._id);
-        res.status(200).json(requestId)
+
+        const requests = await requestService.getRequestId(
+            req.user._id
+        );
+
+        return res.status(200).json(requests);
+
     } catch (error) {
         next(error);
     }
-}
+};
+
+
+
 const requestUpdate = async (req, res, next) => {
     try {
-        const newRequest = await requestService.requestUpdate(req.params.id, req.body);
-        res.status(200).json(newRequest);
+
+        const request = await requestService.requestUpdate(
+            req.params.id,
+            req.body
+        );
+
+
+        return res.status(200).json(request);
+
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
+
+
 
 const requestForward = async (req, res, next) => {
     try {
+
         const { nextStep } = req.body;
+
 
         const request = await requestService.requestForward(
             req.params.id,
@@ -60,52 +82,86 @@ const requestForward = async (req, res, next) => {
             req.user._id
         );
 
-        res.status(200).json(request);
+
+        return res.status(200).json(request);
 
     } catch (error) {
         next(error);
     }
 };
 
+
+
 const requestAdjustment = async (req, res, next) => {
     try {
+
         const { observation } = req.body;
 
-        const adjustment = await requestService.requestAdjustment(req.params.id, observation);
 
-        res.status(200).json({
-            mesagge: "Solicitação enviada para ajuste.",
-            adjustment
-        })
+        const adjustment = await requestService.requestAdjustment(
+            req.params.id,
+            observation
+        );
+
+
+        return res.status(200).json({
+            message: "Solicitação enviada para ajuste.",
+            data: adjustment
+        });
+
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
+
+
 
 const requestComplete = async (req, res, next) => {
     try {
-        const requestComplete = await requestService.requestComplete(req.params.id);
 
-        res.status(200).json({
-            mesagge: "Solicitação concluída com sucesso",
-            requestComplete
+        const requestComplete = await requestService.requestComplete(
+            req.params.id
+        );
+
+
+        return res.status(200).json({
+            message: "Solicitação concluída com sucesso.",
+            data: requestComplete
         });
+
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
+
+
+
 const requestCancel = async (req, res, next) => {
     try {
+
         const { observation } = req.body;
-        const cancel = await requestService.requestCancel(req.params.id, observation);
-        res.status(200).json({
-            mesagge: "Solicitação cancelada",
-            cancel
-        })
+
+
+        const cancel = await requestService.requestCancel(
+            req.params.id,
+            observation
+        );
+
+
+        return res.status(200).json({
+            message: "Solicitação cancelada.",
+            data: cancel
+        });
+
+
     } catch (error) {
-        next(error)
+        next(error);
     }
 };
+
+
 
 export default {
     newRequest,
@@ -116,5 +172,4 @@ export default {
     requestAdjustment,
     requestComplete,
     requestCancel
-
-}
+};
