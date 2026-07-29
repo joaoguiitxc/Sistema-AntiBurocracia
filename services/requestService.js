@@ -34,12 +34,16 @@ const getAllRequests = async () => {
 };
 
 
-const getRequestId = async (userId) => {
-    return await Request.find({
-        createdBy: userId
-    });
-};
+const getRequestById = async (id) => {
 
+    const request = await Request.findById(id);
+
+    if (!request) {
+        throw new Error("Solicitação não encontrada.");
+    }
+
+    return request;
+};
 
 const requestUpdate = async (id, data) => {
 
@@ -280,7 +284,7 @@ const requestCancel = async (id, observation) => {
 export default {
     newRequest,
     getAllRequests,
-    getRequestId,
+    getRequestById,
     requestUpdate,
     requestForward,
     requestAdjustment,

@@ -22,7 +22,7 @@ router.get(
 router.get(
     "/:id",
     authMiddleware,
-    requestController.getRequestId
+    requestController.getRequestById
 );
 
 

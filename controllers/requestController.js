@@ -35,15 +35,13 @@ const getAllRequests = async (req, res, next) => {
 };
 
 
-
-const getRequestId = async (req, res, next) => {
+const getRequestById = async (req, res, next) => {
     try {
 
-        const requests = await requestService.getRequestId(
-            req.user._id
-        );
+        const request =
+            await requestService.getRequestById(req.params.id);
 
-        return res.status(200).json(requests);
+        res.status(200).json(request);
 
     } catch (error) {
         next(error);
@@ -166,7 +164,7 @@ const requestCancel = async (req, res, next) => {
 export default {
     newRequest,
     getAllRequests,
-    getRequestId,
+    getRequestById,
     requestUpdate,
     requestForward,
     requestAdjustment,
