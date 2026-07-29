@@ -1,36 +1,47 @@
 import mongoose from "mongoose";
 
+
 const requestHistorySchema = new mongoose.Schema(
     {
         requestId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "request",
+            ref: "Request",
             required: true,
         },
+
+
         userId: {
             type: mongoose.Schema.Types.ObjectId,
-            ref:"User",
+            ref: "User",
             required: true,
         },
+
+
         action: {
             type: String,
-            required: false,
+            required: true,
             trim: true,
         },
+
+
         previousStep: {
             type: String,
-            required: false,
             trim: true,
+            default: null,
         },
+
+
         newStep: {
             type: String,
-            required: false,
             trim: true,
+            default: null,
         },
+
+
         observations: {
             type: String,
-            required: false,
             trim: true,
+            default: null,
         },
     },
     {
@@ -39,4 +50,8 @@ const requestHistorySchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model("requestHistory", requestHistorySchema);
+
+export default mongoose.model(
+    "RequestHistory",
+    requestHistorySchema
+);

@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+
         email: {
             type: String,
             required: true,
@@ -14,12 +15,7 @@ const userSchema = new mongoose.Schema(
             lowercase: true,
             trim: true,
         },
-        cpf: {
-            type: String,
-            required: true,
-            unique: true,
-            trim: true,
-        },
+
         password: {
             type: String,
             required: true,
@@ -28,17 +24,27 @@ const userSchema = new mongoose.Schema(
 
         role: {
             type: String,
-            enum: ["EE", "admin"]
+            enum: ["EE", "admin"],
+            required: true,
+            default: "EE",
         },
+
         sector: {
             type: String,
+            enum: [
+                "Administrative",
+                "Purchasing",
+                "Finance",
+                "Maintenance",
+                "Cleaning",
+            ],
             required: true,
         },
+
         active: {
             type: Boolean,
             default: true,
         },
-
     },
     {
         collection: "user",

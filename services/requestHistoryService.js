@@ -1,5 +1,6 @@
 import RequestHistory from "../models/requestHistory.js";
-import request from "../models/request.js";
+import Request from "../models/request.js";
+
 
 const createHistory = async (
     requestId,
@@ -9,7 +10,7 @@ const createHistory = async (
     newStep = null,
     observations = null
 ) => {
-    console.log("Entrou no createHistory");
+
     const history = await RequestHistory.create({
         requestId,
         userId,
@@ -19,24 +20,36 @@ const createHistory = async (
         observations
     });
 
+
     return history;
 };
 
+
+
 const getRequestHistory = async (requestId, user) => {
 
-    const requestH = await request.findById(requestId);
+    const request = await Request.findById(requestId);
 
-    if (!requestH) {
-        throw new Error("Solicitação não encontrada.");
+
+    if (!request) {
+        throw new Error(
+            "Solicitação não encontrada."
+        );
     }
+
 
     const isAdmin = user.role === "admin";
 
+
     const isCreator =
-        requestH.createdBy.toString() === user._id.toString();
+        request.createdBy &&
+        request.createdBy.toString() === user._id.toString();
+
 
     const isCurrentSector =
-        requestH.currentStep === user.sector;
+        request.currentStep === user.sector;
+
+
 
     if (!isAdmin && !isCreator && !isCurrentSector) {
         throw new Error(
@@ -44,12 +57,21 @@ const getRequestHistory = async (requestId, user) => {
         );
     }
 
+
+
     const history = await RequestHistory.find({
         requestId
-    }).sort({ createdAt: 1 });
+    })
+    .sort({
+        createdAt: 1
+    });
+
+
 
     return history;
 };
+
+
 
 export default {
     createHistory,

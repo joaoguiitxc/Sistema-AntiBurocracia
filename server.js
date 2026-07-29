@@ -1,9 +1,16 @@
 import { setServers } from "node:dns/promises";
-setServers(["1.1.1.1", "8.8.8.8"]);
 
-//import cors from "cors";
+setServers([
+    "1.1.1.1",
+    "8.8.8.8"
+]);
+
+
+
+
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
 
 import connectDB from "./config/db.js";
 
@@ -12,34 +19,95 @@ import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import requestRoutes from "./routes/requestRoutes.js";
 import requestHistoryRoutes from "./routes/requestHistoryRoutes.js";
+import reportRoutes from "./routes/reportRoutes.js";
+
 
 dotenv.config();
 
+
 const app = express();
+
+
 const PORT = process.env.PORT || 3000;
+
+
+
+app.use(cors());
+
 
 app.use(express.json());
 
+
+
 app.get("/", (req, res) => {
-  res.json({ message: "API de Sistema-AntiBurocracia funcionando" });
+
+    res.json({
+        message: "API Sistema-AntiBurocracia funcionando"
+    });
+
 });
 
+
+
 app.use("/auth", authRoutes);
+
 app.use("/user", userRoutes);
-app.use("/admin", adminRoutes)
+
+app.use("/admin", adminRoutes);
+
 app.use("/requests", requestRoutes);
+
 app.use("/request-history", requestHistoryRoutes);
 
-const startServer = async () => {
-  try {
-    await connectDB();
+app.use("/reports", reportRoutes);
 
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
+
+
+// Middleware global de erro
+
+app.use((error, req, res, next) => {
+
+    console.error(error);
+
+
+    res.status(
+        error.statusCode || 500
+    )
+    .json({
+        error: error.message || "Erro interno do servidor"
     });
-  } catch (error) {
-    console.log("Erro ao iniciar o servidor:", error.message);
-  }
+
+});
+
+
+
+const startServer = async () => {
+
+    try {
+
+        await connectDB();
+
+
+        app.listen(PORT, () => {
+
+            console.log(
+                `Servidor rodando na porta ${PORT}`
+            );
+
+        });
+
+
+    } catch (error) {
+
+        console.log(
+            "Erro ao iniciar o servidor:",
+            error.message
+        );
+
+    }
+
 };
+
+
 
 startServer();

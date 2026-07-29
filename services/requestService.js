@@ -1,11 +1,10 @@
-import get from "mongoose";
-import request from "../models/request.js";
-import requestController from "../controllers/requestController.js";
+import Request from "../models/request.js";
 import requestHistoryService from "./requestHistoryService.js";
+
 
 const newRequest = async (body, userId) => {
 
-    const newRequest = await request.create({
+    const newRequest = await Request.create({
         title: body.title,
         description: body.description,
         category: body.category,
@@ -14,7 +13,8 @@ const newRequest = async (body, userId) => {
         currentStep: "Administrative",
         createdBy: userId,
     });
-    console.log("1 - Solicitação criada");
+
+
     await requestHistoryService.createHistory(
         newRequest._id,
         userId,
@@ -23,44 +23,77 @@ const newRequest = async (body, userId) => {
         "Administrative",
         "Solicitação criada."
     );
-    console.log("2 - Histórico criado");
+
+
     return newRequest;
 };
 
 
 const getAllRequests = async () => {
-    const requests = await request.find();
-    return requests;
+    return await Request.find();
 };
 
+
 const getRequestId = async (userId) => {
-    console.log(userId)
-    const requests = await request.find({ createdBy: userId });
-    return requests
-}
+    return await Request.find({
+        createdBy: userId
+    });
+};
+
 
 const requestUpdate = async (id, data) => {
-    const newRequest = await request.findByIdAndUpdate(id, data, {
-        new: true,
-        runValidators: true
-    })
-    return newRequest;
-}
+
+    const request = await Request.findById(id);
+
+
+    if (!request) {
+        throw new Error("Solicitação não encontrada.");
+    }
+
+
+    if (
+        request.status === "completed" ||
+        request.status === "cancelled"
+    ) {
+        throw new Error(
+            "Solicitações concluídas ou canceladas não podem ser editadas."
+        );
+    }
+
+
+    Object.assign(request, data);
+
+    await request.save();
+
+    return request;
+};
 
 
 
 const requestForward = async (id, nextStep, userId) => {
 
-    const requestDoc = await request.findById(id);
+    const request = await Request.findById(id);
 
-    if (!requestDoc) {
+
+    if (!request) {
         throw new Error("Solicitação não encontrada.");
     }
 
-    if (requestDoc.status !== "in progress") {
-        throw new Error("A solicitação não pode ser encaminhada.");
+
+    if (request.status !== "in progress") {
+        throw new Error(
+            "A solicitação não pode ser encaminhada."
+        );
     }
-    nextStep = nextStep.trim();
+
+
+    if (!nextStep || typeof nextStep !== "string") {
+        throw new Error(
+            "Próxima etapa inválida."
+        );
+    }
+
+
     const validSteps = [
         "Administrative",
         "Purchasing",
@@ -70,42 +103,53 @@ const requestForward = async (id, nextStep, userId) => {
         "Completed"
     ];
 
-    console.log("nextStep recebido:", nextStep);
-    console.log("é válido?", validSteps.includes(nextStep));
 
     if (!validSteps.includes(nextStep)) {
         throw new Error("Etapa inválida.");
     }
-    const previousStep = requestDoc.currentStep;
-    requestDoc.currentStep = nextStep;
+
+
+    const previousStep = request.currentStep;
+
+
+    request.currentStep = nextStep;
+
 
     if (nextStep === "Completed") {
-        requestDoc.status = "completed";
-        requestDoc.completionDate = new Date();
+        request.status = "completed";
+        request.completionDate = new Date();
     }
 
-    await requestDoc.save();
+
+    await request.save();
+
+
     await requestHistoryService.createHistory(
-        requestDoc._id,
+        request._id,
         userId,
-        requestDoc.createdBy,
         "Forwarded",
         previousStep,
         nextStep,
         null
     );
-    return requestDoc;
+
+
+    return request;
 };
+
+
+
 const requestAdjustment = async (id, observation) => {
 
-    const requestAdj = await request.findById(id);
+    const request = await Request.findById(id);
 
-    if (!requestAdj) {
+
+    if (!request) {
         throw new Error("Solicitação não encontrada.");
     }
 
 
-    if (requestAdj.status !== "in progress") {
+    if (request.status !== "in progress") {
         throw new Error(
             "Essa solicitação não pode receber ajustes."
         );
@@ -119,72 +163,119 @@ const requestAdjustment = async (id, observation) => {
     }
 
 
-    requestAdj.observations = observation;
+    request.observations = observation;
 
 
-    await requestAdj.save();
+    await request.save();
+
+
     await requestHistoryService.createHistory(
-        requestAdj._id,
-        requestAdj.createdBy,
+        request._id,
+        request.createdBy,
         "Adjustment Requested",
-        requestAdj.currentStep,
-        requestAdj.currentStep,
+        request.currentStep,
+        request.currentStep,
         observation
     );
 
-    return requestAdj;
-};
-const requestComplete = async (id) => {
-    const requestComplete = await request.findById(id);
-    if (!requestComplete) {
-        throw new Error("solicitação não encontrada");
-    }
-    if (requestComplete.status !== "in progress") {
-        throw new Error("Essa solicitação ainda está em progresso")
-    };
-    requestComplete.status = "completed";
-    const previousStep = requestComplete.currentStep;
-    requestComplete.currentStep = "Completed";
-    requestComplete.completionDate = new Date();
 
-    await requestComplete.save();
+    return request;
+};
+
+
+
+const requestComplete = async (id) => {
+
+    const request = await Request.findById(id);
+
+
+    if (!request) {
+        throw new Error(
+            "Solicitação não encontrada."
+        );
+    }
+
+
+    if (request.status !== "in progress") {
+        throw new Error(
+            "Essa solicitação não pode ser concluída."
+        );
+    }
+
+
+    const previousStep = request.currentStep;
+
+
+    request.status = "completed";
+    request.currentStep = "Completed";
+    request.completionDate = new Date();
+
+
+    await request.save();
+
+
     await requestHistoryService.createHistory(
-        requestComplete._id,
-        requestComplete.createdBy,
+        request._id,
+        request.createdBy,
         "Completed",
         previousStep,
         "Completed",
         "Solicitação concluída."
     );
-    return requestComplete;
+
+
+    return request;
 };
 
-const requestCancel = async (id, observation) => {
-    const requestC = await request.findById(id);
-    if (!requestC) {
-        throw new Error("Solicitação não encontrada")
-    }
-    if (requestC.status !== "in progress") {
-        throw new Error("Essa solicitação não pode ser cancelada")
-    }
-    if (!observation) {
-        throw new Error("O motivo do cancelamento da solicitação é obrigatório")
-    }
-    requestC.status = "cancelled";
-    requestC.observations = observation;
 
-    await requestC.save()
+
+const requestCancel = async (id, observation) => {
+
+    const request = await Request.findById(id);
+
+
+    if (!request) {
+        throw new Error(
+            "Solicitação não encontrada."
+        );
+    }
+
+
+    if (request.status !== "in progress") {
+        throw new Error(
+            "Essa solicitação não pode ser cancelada."
+        );
+    }
+
+
+    if (!observation) {
+        throw new Error(
+            "O motivo do cancelamento é obrigatório."
+        );
+    }
+
+
+    request.status = "cancelled";
+    request.observations = observation;
+
+
+    await request.save();
+
+
     await requestHistoryService.createHistory(
-        requestC._id,
-        requestC.createdBy,
+        request._id,
+        request.createdBy,
         "Cancelled",
-        requestC.currentStep,
-        requestC.currentStep,
+        request.currentStep,
+        request.currentStep,
         observation
     );
-    return requestC
 
-}
+
+    return request;
+};
+
+
 export default {
     newRequest,
     getAllRequests,
@@ -194,6 +285,4 @@ export default {
     requestAdjustment,
     requestComplete,
     requestCancel
-
-
-}
+};

@@ -1,4 +1,3 @@
-import { ObjectId } from "mongodb";
 import mongoose from "mongoose";
 
 
@@ -10,59 +9,84 @@ const requestSchema = new mongoose.Schema(
             trim: true,
         },
 
+
         description: {
             type: String,
             required: true,
             trim: true,
         },
 
+
         category: {
             type: String,
             required: true,
-            trim: true,
-            enum: ["Stock Replenishment","Purchasing", "Maintenance", "Cleaning", "Administrative", "other"]
+            enum: [
+                "Stock Replenishment",
+                "Purchasing",
+                "Maintenance",
+                "Cleaning",
+                "Administrative",
+                "Other"
+            ],
         },
+
 
         priority: {
             type: String,
             required: true,
-            trim: true,
-            enum: ["low","average","high"],
-
+            enum: [
+                "low",
+                "average",
+                "high"
+            ],
         },
+
 
         status: {
             type: String,
             required: true,
-            trim: true,
             default: "in progress",
-            enum: ["in progress","completed","cancelled" ]
+            enum: [
+                "in progress",
+                "completed",
+                "cancelled"
+            ],
         },
 
-         currentStep: {
+
+        currentStep: {
             type: String,
             required: true,
-            trim: true,
-            default: "Administrative"
+            default: "Administrative",
+            enum: [
+                "Administrative",
+                "Purchasing",
+                "Finance",
+                "Maintenance",
+                "Cleaning",
+                "Completed"
+            ],
         },
 
+
         createdBy: {
-            type:mongoose.Schema.Types.ObjectId,
-            ref : "User",
-            trim: true,
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
         },
+
 
         completionDate: {
             type: Date,
-           default: null
+            default: null,
         },
+
 
         observations: {
             type: String,
-            required: false,
             trim: true,
+            default: null,
         },
-
     },
     {
         collection: "request",
@@ -70,4 +94,5 @@ const requestSchema = new mongoose.Schema(
     }
 );
 
-export default mongoose.model("request", requestSchema);
+
+export default mongoose.model("Request", requestSchema);

@@ -1,68 +1,93 @@
-import get from "mongoose";
+import bcrypt from "bcryptjs";
 import User from "../models/user.js";
 
+
 const getAllUser = async () => {
-  return User.find();
-}
+    return await User.find();
+};
+
 
 const getUserById = async (id) => {
 
-  const userId = await User.findById(id);
+    const user = await User.findById(id);
 
-  if (!userId) {
-    const error = new Error("Usuário não encontrado");
-    error.statusCode = 404;
-    throw error;
-  }
+    if (!user) {
+        const error = new Error("Usuário não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
 
-  return userId;
-}
+    return user;
+};
+
 
 const updateUser = async (id, data) => {
-  const userUpdate = await User.findByIdAndUpdate(id, data, {
-    new: true,
-    runValidators: true,
-  });
 
-  if (!userUpdate) {
-    const error = new Error("Usuário não encontrado");
-    error.statusCode = 404;
-    throw error;
-  }
+    if (data.password) {
+        data.password = await bcrypt.hash(data.password, 10);
+    }
 
-  return userUpdate;
-}
 
-const userDesativate = async (id) => {
-  const userDesativate = await User.findById(id)
+    const user = await User.findByIdAndUpdate(
+        id,
+        data,
+        {
+            new: true,
+            runValidators: true,
+        }
+    );
 
-  if (!userDesativate) {
-    const error = new Error("não foi possível encontrar usuário!");
-    error.statusCode = 404;
-    throw error;
-  }
 
- userDesativate.active = false
+    if (!user) {
+        const error = new Error("Usuário não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
 
-await userDesativate.save();
 
-return userDesativate;
-}
+    return user;
+};
 
-const userActivate = async (id) => {
-  const userActivate = await User.findById(id);
 
-  if (!userActivate) {
-    const error = new Error("não foi possível encontrar usuário!");
-    error.statusCode = 404;
-    throw error;
-  }
+const deactivateUser = async (id) => {
 
-  userActivate.active = true;
+    const user = await User.findById(id);
 
-  await userActivate.save();
 
-  return userActivate;
+    if (!user) {
+        const error = new Error("Usuário não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+
+    user.active = false;
+
+    await user.save();
+
+
+    return user;
+};
+
+
+const activateUser = async (id) => {
+
+    const user = await User.findById(id);
+
+
+    if (!user) {
+        const error = new Error("Usuário não encontrado");
+        error.statusCode = 404;
+        throw error;
+    }
+
+
+    user.active = true;
+
+    await user.save();
+
+
+    return user;
 };
 
 
@@ -70,6 +95,6 @@ export default {
     getAllUser,
     getUserById,
     updateUser,
-    userDesativate,
-    userActivate
-}
+    deactivateUser,
+    activateUser,
+};
