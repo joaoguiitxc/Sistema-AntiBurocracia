@@ -98,7 +98,8 @@ const requestAdjustment = async (req, res, next) => {
 
         const adjustment = await requestService.requestAdjustment(
             req.params.id,
-            observation
+            observation,
+             req.user._id
         );
 
 
