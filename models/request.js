@@ -35,9 +35,9 @@ const requestSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum: [
-                "low",
-                "average",
-                "high"
+                "Low",
+                "Average",
+                "High"
             ],
         },
 
