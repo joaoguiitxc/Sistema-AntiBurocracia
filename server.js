@@ -58,6 +58,7 @@ app.use("/admin", adminRoutes);
 app.use("/requests", requestRoutes);
 
 app.use("/request-history", requestHistoryRoutes);
+app.use("/reports", reportRoutes);
 
 app.use("/reports", reportRoutes);
 
