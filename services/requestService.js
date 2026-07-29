@@ -100,7 +100,8 @@ const requestForward = async (id, nextStep, userId) => {
         "Finance",
         "Maintenance",
         "Cleaning",
-        "Completed"
+        "Completed",
+        "Stock"
     ];
 
 
